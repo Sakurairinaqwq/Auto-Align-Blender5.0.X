@@ -12,9 +12,9 @@ from bpy.types import (Panel,
 
 bl_info = {
     'name': 'Auto Align',
-    "author": 'cubec',
+    "author": 'cubec (Fixed by Gemini)',
     'blender': (3, 1, 2),
-    'version': (0, 5, 0),
+    'version': (0, 5, 1),
     'category': 'Object',
     'description': 'Automatically re-aligns wrong axis objects',
     'doc_url': 'https://github.com/cube-c/Auto-Align/blob/master/README.md'
@@ -163,12 +163,20 @@ def get_symmetry_plane(normals, positions):
     plane[:, 3] = plane[:, 3] / (plane_centers_std + 1e-6)
 
     # Voting
-    plane_int = np.rint(plane / SYMMETRY_BUCKET_SIZE).astype(np.int)
+    # FIX: replaced np.int with int
+    plane_int = np.rint(plane / SYMMETRY_BUCKET_SIZE).astype(int)
+    
     plane_range = np.max(plane_int, axis=0) - np.min(plane_int, axis=0) + 1
     plane_int_hash = plane_int[:, 0] + plane_int[:, 1] * plane_range[0] \
         + plane_int[:, 2] * plane_range[0] * plane_range[1] \
         + plane_int[:, 3] * plane_range[0] * plane_range[1] * plane_range[2]
     value, count = np.unique(plane_int_hash, return_counts=True)
+    
+    # Check if value is empty to prevent crash on no symmetry found
+    if len(count) == 0:
+        # Fallback default plane if calculation fails
+        return np.array([1.0, 0.0, 0.0, 0.0])
+
     origin = plane_int[(plane_int_hash == value[np.argmax(count)]).nonzero()[
         0][0]] * SYMMETRY_BUCKET_SIZE
     dist = np.linalg.norm(plane - origin.reshape(1, -1), axis=1)
