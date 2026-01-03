@@ -1,6 +1,6 @@
 # Auto Align
 
-Q:为什么出现了报错？！
+Q:为什么出现了报错？！</br>
 A:在较新的 Blender 版本（使用较新的 Python 和 NumPy 版本）中，np.int 已经被弃用并移除，必须直接使用 Python 原生的 int。
 
 A blender add-on that automatically re-aligns wrong axis objects.
