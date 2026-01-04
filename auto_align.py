@@ -12,7 +12,7 @@ from bpy.types import (Panel,
 
 bl_info = {
     'name': 'Auto Align',
-    "author": 'cubec (Fixed by Gemini)',
+    "author": 'cubec',
     'blender': (3, 1, 2),
     'version': (0, 5, 1),
     'category': 'Object',
